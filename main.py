@@ -1,17 +1,16 @@
 import maya.cmds as cmds
 
+import maya.cmds as cmds
+
 
 class Turntable:
 
     def __init__(self):
-        def __init__(self):
-            self.obj = cmds.ls('object')[0]
-            cmds.ctxEditMode()
-            cmds.CenterPivot('{}'.format(self.obj))
-            cmds.ctxEditMode()
-            cmds.setAttr('{}.translateX'.format(self.obj), 0)
-            cmds.setAttr('{}.translateY'.format(self.obj), 0)
-            cmds.setAttr('{}.translateZ'.format(self.obj), 0)
+        self.obj = cmds.ls('object')[0]
+        cmds.ctxEditMode()
+        cmds.CenterPivot('{}'.format(self.obj))
+        cmds.ctxEditMode()
+        cmds.makeIdentity('{}'.format(self.obj), t=True, r=True)
 
     def sethdri(self):
         hdr_list = ['night', 'overcast', 'studio', 'sunny']
@@ -27,18 +26,22 @@ class Turntable:
             cmds.setAttr('hdrDomeShape.background_enable', 0)
             status = 0
 
-    def setcamera(self):
-        cmds.viewFit('{}'.format(self.obj))
-
-    def rotateobj(self):
-
-
-# rotate 360 degrees
-# variable for setting speed?
+    def setcamera(self, *args):
+        cmds.viewFit('maincamera', '{}'.format(self.obj))
+        cmds.setKeyframe('{}'.format(self.obj))
 
 
-# bbox = cmds.exactWorldBoundingBox( 'pSphere1')
+insta = Turntable()
 
 
-# fit camera to selected object
-cmds.viewFit()
+def createwindow(insta):
+    # create a window
+    if cmds.window('tableturn', ex=True):
+        cmds.deleteUI('tableturn')
+    cmds.window('tableturn')
+    cmds.columnLayout()
+    cmds.button(label='foofoo', command=insta.setcamera)
+    cmds.showWindow('tableturn')
+
+
+createwindow(insta)
